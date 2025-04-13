@@ -25,8 +25,8 @@ function App() {
                 body: formData,
             });
             const data = await response.json();
-            setMetrics(data.metricsByLLM); // Set metrics for all LLMs
-            setDownloadLink(`http://localhost:3001/download?filePath=${data.filePath}`); // Set the download link
+            setMetrics(data.metricsByLLM); //sets metrics for all llms
+            setDownloadLink(`http://localhost:3001/download?filePath=${data.filePath}`); //sets download link
         } catch (error) {
             console.error("Error uploading file:", error);
         }
@@ -34,7 +34,7 @@ function App() {
 
     const handleDownload = () => {
         if (downloadLink) {
-            window.location.href = downloadLink; // Trigger the download
+            window.location.href = downloadLink; //trigger download
         }
     };
 

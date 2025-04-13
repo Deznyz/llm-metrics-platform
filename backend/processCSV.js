@@ -4,10 +4,10 @@ const { calculateMetrics } = require("./metrics");
 
 async function processCSV(inputFilePath, outputFilePath, classifiers) {
     const results = [];
-    const predictionsByLLM = {}; // Store predictions for each LLM
+    const predictionsByLLM = {}; //stores predictions for each llm
     const trueLabels = [];
 
-    // Initialize predictionsByLLM for each classifier
+    //initializes predictionsByLLM for each classifier
     Object.keys(classifiers).forEach((llmName) => {
         predictionsByLLM[llmName] = [];
     });
@@ -26,22 +26,22 @@ async function processCSV(inputFilePath, outputFilePath, classifiers) {
                     const trueLabel = row["label"].toLowerCase();
                     trueLabels.push(trueLabel);
 
-                    // Get predictions from all LLMs
+                    //gets predictions from all llms
                     for (const [llmName, classifier] of Object.entries(classifiers)) {
                         const prediction = await classifier(emailText);
                         predictionsByLLM[llmName].push(prediction);
-                        row[`${llmName}_prediction`] = prediction; // Add prediction to the row
+                        row[`${llmName}_prediction`] = prediction; //adds prediction to row
                     }
                 }
 
-                // Write results to a new CSV
+                //writes results to new CSV
                 const outputData = results.map((row) => {
                     const rowData = {
                         feature: row["feature"],
                         label: row["label"],
                     };
 
-                    // Add predictions for each LLM
+                    //posts predictions for each llm
                     Object.keys(classifiers).forEach((llmName) => {
                         rowData[`${llmName}_prediction`] = row[`${llmName}_prediction`];
                     });
@@ -64,7 +64,7 @@ async function processCSV(inputFilePath, outputFilePath, classifiers) {
                     .join("\n");
                 fs.writeFileSync(outputFilePath, `${csvHeader}\n${csvContent}`);
 
-                // Calculate metrics for each LLM
+                //calculates metrics for llms
                 const metricsByLLM = {};
                 Object.keys(classifiers).forEach((llmName) => {
                     metricsByLLM[llmName] = calculateMetrics(trueLabels, predictionsByLLM[llmName]);

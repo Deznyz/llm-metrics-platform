@@ -4,9 +4,10 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const { processCSV } = require("./processCSV");
+
+
 const { classifyWithGPT } = require("./classifyGPT");
-// Future: Add more LLM classifiers here
-// const { classifyWithOtherLLM } = require("./classifyOtherLLM");
+//future: add more llm classifiers here like abvoe
 
 const app = express();
 const upload = multer({ dest: "backend/uploads/" });
@@ -14,18 +15,17 @@ const upload = multer({ dest: "backend/uploads/" });
 const PORT = 3001;
 
 app.use(bodyParser.json());
-app.use(cors()); // Allow requests from the frontend
+app.use(cors()); //allows requests from frontend
 
-// Endpoint to upload CSV to backend
+//endpoint to upload CSV to backend
 app.post("/upload", upload.single("file"), async (req, res) => {
     const inputFilePath = req.file.path;
     const outputFilePath = "backend/uploads/output.csv"; // Path for the processed output file
 
-    // Define all integrated LLMs
+    //define all integrated llms
     const classifiers = {
         gpt: classifyWithGPT,
-        // Add more LLMs here
-        // otherLLM: classifyWithOtherLLM,
+        //future: add more LLMs here
     };
 
     try {
@@ -35,7 +35,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
             classifiers
         );
 
-        // Send the file path and metrics for all LLMs back to the frontend
+        //sends the file path and metrics drom llms back to frontend
         res.status(200).json({ message: "Processing complete", filePath: generatedFilePath, metricsByLLM });
     } catch (error) {
         console.error("Error processing CSV:", error);
@@ -43,9 +43,9 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     }
 });
 
-// Endpoint to download the generated CSV file
+//endpoint to download new CSV file
 app.get("/download", (req, res) => {
-    const filePath = req.query.filePath; // Get the file path from the query parameter
+    const filePath = req.query.filePath; //gets file path from query parameter
     res.download(filePath, "output.csv", (err) => {
         if (err) {
             console.error("Error downloading file:", err);
@@ -54,7 +54,7 @@ app.get("/download", (req, res) => {
     });
 });
 
-// Start the server
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
