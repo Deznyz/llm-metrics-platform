@@ -7,6 +7,10 @@ const { processCSV } = require("./processCSV");
 
 
 const { classifyWithGPT } = require("./classifyGPT");
+const { classifyWithDeepSeek } = require("./classifyDeepSeek");
+const { classifyWithPhi4 } = require("./classifyPhi4");
+const { classifyWithClaude } = require("./classifyClaude");
+const { classifyWithGemini } = require("./classifyGemini");
 //future: add more llm classifiers here like abvoe
 
 const app = express();
@@ -20,11 +24,15 @@ app.use(cors()); //allows requests from frontend
 //endpoint to upload CSV to backend
 app.post("/upload", upload.single("file"), async (req, res) => {
     const inputFilePath = req.file.path;
-    const outputFilePath = "backend/uploads/output.csv"; // Path for the processed output file
+    const outputFilePath = "backend/uploads/output.csv"; //path for the processed output file
 
     //define all integrated llms
     const classifiers = {
         gpt: classifyWithGPT,
+        deepSeek: classifyWithDeepSeek,
+        phi4: classifyWithPhi4,
+        claude: classifyWithClaude,
+        //gemini: classifyWithGemini,
         //future: add more LLMs here
     };
 

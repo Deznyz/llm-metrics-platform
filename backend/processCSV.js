@@ -21,18 +21,48 @@ async function processCSV(inputFilePath, outputFilePath, classifiers) {
             .on("end", async () => {
                 console.log("CSV file successfully processed.");
 
+                let idx = 0; //index for current row being processed
+
                 for (const row of results) {
+                    if (!row["label"]) {
+                        console.warn(`Row is missing a label: ${JSON.stringify(row)}`);
+                        continue;
+                    }
+
                     const emailText = row["feature"];
-                    const trueLabel = row["label"].toLowerCase();
+                    const trueLabel = row["label"] ? row["label"].toLowerCase() : null; //handles missing labels
+
+                    if (!trueLabel) {
+                        console.warn("skipping row due to missing label:", row);
+                        continue; //skips rows with missing labels
+                    }
+
                     trueLabels.push(trueLabel);
 
-                    //gets predictions from all llms
+                    //logs the row being processed
+                    //console.log(`Processing row: ${JSON.stringify(row)}`);
+
+                    console.log(`\n \nprocessing row ${idx}`);
+                    idx++; //increments index for next row
+                    console.log(`email text: \n${emailText}\n`);
+
+                    //gets predictions from all LLMs
                     for (const [llmName, classifier] of Object.entries(classifiers)) {
-                        const prediction = await classifier(emailText);
-                        predictionsByLLM[llmName].push(prediction);
-                        row[`${llmName}_prediction`] = prediction; //adds prediction to row
+                        try {
+                            console.log(`calling classifier: ${llmName}`);
+                            const prediction = await classifier(emailText);
+                            predictionsByLLM[llmName].push(prediction);
+                            row[`${llmName}_prediction`] = prediction; //adds prediction to row
+                            console.log(`classifier ${llmName} prediction: ${prediction}\n`);
+                        } catch (error) {
+                            console.error(`error with classifier ${llmName} on row: ${JSON.stringify(row)}`, error);
+                            predictionsByLLM[llmName].push("error"); //adds "error" as prediction
+                            row[`${llmName}_prediction`] = "error";
+                        }
                     }
                 }
+
+                console.log("\nall rows processed");
 
                 //writes results to new CSV
                 const outputData = results.map((row) => {
@@ -70,7 +100,7 @@ async function processCSV(inputFilePath, outputFilePath, classifiers) {
                     metricsByLLM[llmName] = calculateMetrics(trueLabels, predictionsByLLM[llmName]);
                 });
 
-                resolve({ outputFilePath, metricsByLLM }); // Return the file path and metrics for all LLMs
+                resolve({ outputFilePath, metricsByLLM }); //Returns file path and metrics for all LLMs
             })
             .on("error", (error) => reject(error));
     });
