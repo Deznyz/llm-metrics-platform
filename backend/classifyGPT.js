@@ -1,6 +1,6 @@
 /*const axios = require("axios");
 
-const API_KEY = "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"; // Replace with your OpenAI API key
+const API_KEY = ""; //replace with OpenAI API key
 
 async function classifyWithGPT(emailText, retryCount = 0) {
     try {
