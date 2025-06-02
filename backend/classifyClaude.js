@@ -7,7 +7,7 @@ async function classifyWithClaude(emailText, retryCount = 0) {
         const messages = [
             {
                 role: "system",
-                content: 'You are a classifier that labels emails as "phishing" or "legitimate". Respond with only one word: "phishing" or "legitimate".',
+                content: 'You are a classifier that labels emails as "phishing" or "legitimate". It is crucial you respond with only one word: "phishing" or "legitimate".',
             },
             {
                 role: "user",

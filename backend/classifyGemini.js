@@ -7,7 +7,7 @@ async function classifyWithGemini(emailText, retryCount = 0) {
         const messages = [
             {
                 role: "system",
-                content: 'You are a classifier that labels emails as "phishing" or "legitimate". Respond with only one word: "phishing" or "legitimate".',
+                content: 'You are a classifier that labels emails as "phishing" or "legitimate". It is crucial you respond with only one word: "phishing" or "legitimate". Do not repeat the anything from the email, the question, the instructions, date, or anything else but "phishing" or "legitimate".',
             },
             {
                 role: "user",
@@ -18,20 +18,20 @@ async function classifyWithGemini(emailText, retryCount = 0) {
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "google/gemini-2.5-pro-preview-03-25",
+                model: "google/gemini-2.5-pro-preview",
                 messages: messages,
-                max_tokens: 10,
+                max_tokens: 100,
             },
             {
                 headers: {
                     Authorization: `Bearer ${API_KEY}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "http://localhost", // Optional
+                    "HTTP-Referer": "http://localhost",
                     "X-Title": "Email Classifier",
                 },
             }
         );
-        console.log("Gemini response:", response.data);
+        //console.log("Gemini response:", response.data);
         
         return response.data.choices[0].message.content.trim().toLowerCase();
     } catch (error) {

@@ -3,6 +3,9 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+
+
+
 const { processCSV } = require("./processCSV");
 
 
@@ -11,7 +14,7 @@ const { classifyWithDeepSeek } = require("./classifyDeepSeek");
 const { classifyWithPhi4 } = require("./classifyPhi4");
 const { classifyWithClaude } = require("./classifyClaude");
 const { classifyWithGemini } = require("./classifyGemini");
-//future: add more llm classifiers here like abvoe
+//add more llm classifiers here like abvoe
 
 const app = express();
 const upload = multer({ dest: "backend/uploads/" });
@@ -29,11 +32,11 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     //define all integrated llms
     const classifiers = {
         gpt: classifyWithGPT,
-        deepSeek: classifyWithDeepSeek,
-        phi4: classifyWithPhi4,
-        claude: classifyWithClaude,
+        //deepSeek: classifyWithDeepSeek,
+        //phi4: classifyWithPhi4,
+        //claude: classifyWithClaude,
         //gemini: classifyWithGemini,
-        //future: add more LLMs here
+        //add more LLMs here
     };
 
     try {
