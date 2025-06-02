@@ -1,8 +1,5 @@
 function calculateMetrics(trueLabels, predictedLabels) {
-    let tp = 0,
-        fp = 0,
-        fn = 0,
-        tn = 0;
+    let tp = 0, fp = 0, fn = 0, tn = 0;
 
     trueLabels.forEach((trueLabel, i) => {
         const predictedLabel = predictedLabels[i];
